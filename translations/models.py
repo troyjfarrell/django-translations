@@ -80,6 +80,11 @@ class Translatable(models.Model):
         """
 
         fields = None
+        blank = True
+
+    @classmethod
+    def are_translatable_fields_blank(cls):
+        return True
 
     @classmethod
     def get_translatable_fields(cls):
