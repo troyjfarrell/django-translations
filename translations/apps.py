@@ -1,3 +1,5 @@
+import re
+
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 from django.db.utils import OperationalError
@@ -15,13 +17,12 @@ class TranslationsConfig(AppConfig):
             ContentType.objects.get_for_models(*models)
 
             # add proper translatable fields dynamically
-            from django.db import models as m
             from translations.models import Translatable
             from translations.languages import _get_translation_choices
             for model in models:
                 if issubclass(model, Translatable):
                     for field in model.get_translatable_fields():
-                        for (code, language) in _get_translation_choices().items():
+                        for (code, language) in _get_translation_choices():
                             translation_field = field.clone()
 
                             if model.are_translatable_fields_blank():
@@ -29,7 +30,11 @@ class TranslationsConfig(AppConfig):
 
                             verbose_name = '{} ({})'.format(
                                 field.verbose_name,
-                                language
+                                re.sub(
+                                    r'([\w\s]+)(?:\s+\(([\w\s]+)\))',
+                                    r'\1 - \2',
+                                    language
+                                )
                             )
                             translation_field.verbose_name = verbose_name
 

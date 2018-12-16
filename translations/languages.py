@@ -66,9 +66,7 @@ def _get_all_choices():
     """Return all the `supported language` choices."""
     global _all_choices
     if _all_choices is None:
-        _all_choices = [
-            (None, '---------'),
-        ] + [choice for choice in settings.LANGUAGES]
+        _all_choices = [choice for choice in settings.LANGUAGES]
     return _all_choices
 
 
